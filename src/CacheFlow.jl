@@ -1,5 +1,7 @@
 module CacheFlow
 
-# Write your package code here.
+include("scratch.jl")
+include("unmemoized_basic_term.jl")
+include("memoized_basic_term.jl")
 
 end
