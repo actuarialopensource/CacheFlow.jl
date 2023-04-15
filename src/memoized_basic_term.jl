@@ -3,13 +3,13 @@ using DataFrames, CSV
 using MortalityTables: MortalityTable
 
 # # read a DataFrame from /Users/matthewcaseres/Documents/GitHub/CacheFlow.jl/src/mort_table.csv
-mort_df = Matrix{Float64}(CSV.read("./src/mort_table.csv", DataFrame)[:, 2:end])
-model_points = CSV.read("./src/model_point_table.csv", DataFrame)
+mort_df = Matrix{Float64}(CSV.read(joinpath(@__DIR__, "models", "mort_table.csv"), DataFrame)[:, 2:end])
+model_points = CSV.read(joinpath(@__DIR__, "models", "model_point_table.csv"), DataFrame)
 issue_age = model_points[:, :age_at_entry]
 policy_term= model_points[:, :policy_term]
 
 Base.@kwdef struct BasicMortality <: MortalityTable
-  rates::Matrix{Float64} = Matrix{Float64}(CSV.read("./src/mort_table.csv", DataFrame)[:, 2:end])
+  rates::Matrix{Float64} = Matrix{Float64}(CSV.read(joinpath(@__DIR__, "models", "mort_table.csv"), DataFrame)[:, 2:end])
   issue_age::Vector{Int} = issue_age
 end
 duration(t::Int) = t ÷ 12
