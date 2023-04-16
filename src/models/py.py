@@ -28,10 +28,8 @@ def check_pv_net_cf():
 
     return math.isclose(res, pv_net_cf())
 
-
 def claim_pp(t):
     return sum_assured()
-
 
 def claims(t):
     return claim_pp(t) * pols_death(t)
@@ -40,14 +38,11 @@ def claims(t):
 def commissions(t): 
     return premiums(t) if duration(t) == 0 else 0
 
-
 def disc_factors():
     return np.array(list((1 + disc_rate_mth()[t])**(-t) for t in range(proj_len())))
 
-
 def disc_rate_mth():
     return np.array(list((1 + disc_rate_ann[t//12])**(1/12) - 1 for t in range(proj_len())))
-
 
 def duration(t):
     """Duration in force in years"""
@@ -149,38 +144,29 @@ def pols_maturity(t):
 def premium_pp():
     return round((1 + loading_prem()) * net_premium_pp(), 2)
 
-
 def premiums(t):
     return premium_pp() * pols_if(t)
-
 
 def proj_len():
     return 12 * policy_term() + 1
 
-
 def pv_claims():
     return sum(list(claims(t) for t in range(proj_len())) * disc_factors()[:proj_len()])
-
 
 def pv_commissions():
     return sum(list(commissions(t) for t in range(proj_len())) * disc_factors()[:proj_len()])
 
-
 def pv_expenses():
     return sum(list(expenses(t) for t in range(proj_len())) * disc_factors()[:proj_len()])
-
 
 def pv_net_cf():
     return pv_premiums() - pv_claims() - pv_expenses() - pv_commissions()
 
-
 def pv_pols_if():
     return sum(list(pols_if(t) for t in range(proj_len())) * disc_factors()[:proj_len()])
 
-
 def pv_premiums():
     return sum(list(premiums(t) for t in range(proj_len())) * disc_factors()[:proj_len()])
-
 
 def result_cf():
 
