@@ -10,7 +10,7 @@ duration(t::Int) = t ÷ 12
 include("mortality.jl")
 
 const sum_assured = model_points[:, :sum_assured]
-const zero_spot = CSV.read("src/models/disc_rate_ann.csv", DataFrame)[:, :zero_spot]
+const zero_spot = CSV.read(joinpath(@__DIR__, "models", "disc_rate_ann.csv"), DataFrame)[:, :zero_spot]
 const sex = model_points[:, :sex]
 const inflation_rate = 0.01
 const expense_acq = 300
