@@ -4,7 +4,7 @@ export pv_claims, pv_premiums, pv_commissions, pv_expenses, pv_net_cf, result_pv
 
 using DataFrames, CSV, Memoize
 
-const final_timestep = Ref(500)
+const final_timestep = Ref(240)
 duration(t::Int) = t ÷ 12
 
 include("mortality.jl")
