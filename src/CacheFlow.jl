@@ -2,7 +2,7 @@ module CacheFlow
 
 export pv_claims, pv_premiums, pv_commissions, pv_expenses, pv_net_cf, result_pv, result_cf
 
-using DataFrames, CSV, LinearAlgebra, Statistics, Memoize
+using DataFrames, CSV, Memoize
 
 const final_timestep = Ref(500)
 duration(t::Int) = t ÷ 12

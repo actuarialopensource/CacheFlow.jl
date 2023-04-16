@@ -19,4 +19,4 @@ using Test
     @test isa(pvs, DataFrame)
     cfs = result_cf()
     @test isa(cfs, DataFrame)
-end
+end;
