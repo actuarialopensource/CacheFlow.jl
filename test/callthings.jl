@@ -1,5 +1,6 @@
 using CacheFlow
 using CacheFlow: Gpt as gpt
+using DataFrames: DataFrame
 using Folds
 using Test
 
@@ -12,6 +13,12 @@ using Test
 # pv_claims works, but it is used in the calculation for premiums(t::Int) which can be called thousands of times potentially.
 # See implementation to see why operation is expensive.
 @test gpt.pv_claims()[1:3] ≈ [5501.19489836432, 5956.471604652321, 9190.425784230943]
-@test gpt.premiums(2)[1:3] ≈ [93.178897, 60.072723, 155.866742]
+@test gpt.pv_premiums()[1:3] ≈ [8252.08585552, 8934.76752446, 13785.48441688]
+@test gpt.pv_commissions()[1:3] ≈ [1084.60427012, 699.31842569, 1814.20246663]
+@test gpt.pv_expenses()[1:3] ≈ [755.36602611, 1097.43049098, 754.73305144]
+@test gpt.pv_net_cf()[1:3] ≈ [910.92066093, 1181.54700314, 2026.12311458]
 
-# res = gpt.result_pv()
+pvs = gpt.result_pv()
+@test isa(pvs, DataFrame)
+cfs = gpt.result_cf()
+@test isa(cfs, DataFrame)
