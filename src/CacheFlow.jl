@@ -20,21 +20,20 @@ const projection_length = 20 * 12
 
 age(t::Int) = age_at_entry() .+ duration(t)
 age_at_entry() = model_points[:, :age_at_entry]
-claim_pp(t::Int) = sum_assured #unused
+claim_pp(t::Int) = sum_assured
 claims(t::Int) = claim_pp(t) .* policies_death(t)
-commissions(t::Int) = duration(t) == 0 ? premiums(t) : zeros(Float64, length(issue_age))
+commissions(t::Int) = duration(t) == 0 ? premiums(t) : 0.0
 disc_factors() = [(1 + disc_rate_mth(t))^(-t) for t in final_timestep[]]
 disc_rate_mth(t::Int)::Float64 = (1 + disc_rate_ann(duration(t)))^(1/12) - 1
-disc_rate_ann(t::Int)::Float64 = 0.05 # where does that come from? t is unused
+disc_rate_ann(t::Int)::Float64 = 0.05
 expenses(t::Int) = t == 0 ? expense_acq .+ (policies_inforce(t) .* (expense_maint / 12) .* inflation_factor(t)) : (policies_inforce(t) .* (expense_maint / 12) .* inflation_factor(t))
 inflation_factor(t::Int) = (1 .+ inflation_rate).^(t/12)
-# this is tested but performance concerns.
 disc_factor(t) = (1 + zero_spot[duration(t)+1])^(-t/12)
-pv_claims() = sum(t -> claims(t) * disc_factor(t), 0:final_timestep[])
-pv_commissions() = sum(t -> commissions(t) * disc_factor(t), 0:final_timestep[])
-pv_expenses() = sum(t -> expenses(t) * disc_factor(t), 0:final_timestep[])
-pv_pols_if() = sum(t -> policies_inforce(t) * disc_factor(t), 0:final_timestep[])
-pv_premiums() = sum(t -> premiums(t) * disc_factor(t), 0:final_timestep[])
+pv_claims() = foldl((res, t) -> (res .+= claims(t) .* disc_factor(t)), 0:final_timestep[]; init = zeros(Float64, length(issue_age)))
+pv_commissions() = foldl((res, t) -> (res .+= commissions(t) .* disc_factor(t)), 0:final_timestep[]; init = zeros(Float64, length(issue_age)))
+pv_expenses() = foldl((res, t) -> (res .+= expenses(t) .* disc_factor(t)), 0:final_timestep[]; init = zeros(Float64, length(issue_age)))
+pv_pols_if() = foldl((res, t) -> (res .+= policies_inforce(t) .* disc_factor(t)), 0:final_timestep[]; init = zeros(Float64, length(issue_age)))
+pv_premiums() = foldl((res, t) -> (res .+= premiums(t) .* disc_factor(t)), 0:final_timestep[]; init = zeros(Float64, length(issue_age)))
 
 net_premium_pp() = pv_claims() ./ pv_pols_if()
 const cache_premiums_pp = Dict{Tuple{},Any}()
